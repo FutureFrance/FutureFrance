@@ -18,6 +18,8 @@ def admin_pass():
 
 
 run = True
+user_access = False
+user_in_list = False
 
 while run:
     character = input("Who are you ADMIN or USER ?\n").upper()
@@ -62,69 +64,88 @@ while run:
         ispositive = True
         found_person = False
         name = input("What is your name ?\n")
-        action = input("What you want to do ? (DEPOSIT / SPEND / SEND | amount)\n")
 
-        if "|" in action and (action.split("|")[0].upper() == "DEPOSIT" or "SPEND" or "SEND") and (action.split("|")[1].replace("\n", "").isnumeric()):
-            with open("testit.txt", "r+") as f:
-                content = f.readlines()
-                text_in_file = ""
+        with open("accounts_pass.txt", "r+") as f:
+            passes = f.readlines()
+            for i in passes:
+                if name in i:
+                    user_in_list = True
+                    break
+            if user_in_list:
+                acc_pass = input("Introduce you're password: ")
+                for j in passes:
+                    if acc_pass == j.split(": ")[1].replace("\n", "") and name == j.split(": ")[0]:
+                        user_access = True
+                        action = input("What you want to do ? (DEPOSIT / SPEND / SEND | amount)\n")
+                        break
+            else:
+                print("nonexistent user")
+                
+            if not user_access and user_in_list:
+                print("Wrong password")
 
-                if action.split("|")[0].upper() == "SEND":
-                    target_name = input("Whom do you want to send the money too ?\n")
-                    for i in content:
-                        if i.split(": ")[0] == target_name:
-                            text_in_file += i.split(": ")[0] + ": " + str((int(action.split("|")[1]) + int(i.split(": ")[1].replace("\n", "")))) + "\n"
-                            found_person = True
-                        elif i.split(": ")[0] == name:
-                            text_in_file += i.split(": ")[0] + ": " + str(int(i.split(": ")[1].replace("\n", "")) - int(action.split("|")[1])) + "\n"
-                            if int(i.split(": ")[1].replace("\n", "")) - int(action.split("|")[1]) < 0:
-                                ispositive = False
-                        else:
-                            text_in_file += i
-                    if not found_person:
-                        text_in_file = ""
-                        print("Invalid user name, person not found")
+        if user_access:
+            if "|" in action and (action.split("|")[0].upper() == "DEPOSIT" or "SPEND" or "SEND") and (action.split("|")[1].replace("\n", "").isnumeric()):
+                with open("testit.txt", "r+") as f:
+                    content = f.readlines()
+                    text_in_file = ""
 
-                elif action.split("|")[0].upper() == "DEPOSIT":
-                    for i in content:
-                        if i.split(": ")[0] == name:
-                            text_in_file += i.split(": ")[0] + ": " + str(int(action.split("|")[1]) + int(i.split(": ")[1].replace("\n", "")))
-                        else:
-                            text_in_file += i
-
-                else:
-                    for x in content:
-                        if x.split(": ")[0] == name:
-                            balance = int(x.split(": ")[1].replace("\n", ""))
-                            if action.split("|")[0] == "deposit":
-                                balance += int(action.split("|")[1])
-                                text_in_file += f'{x.split(": ")[0]}: {balance}\n'
+                    if action.split("|")[0].upper() == "SEND":
+                        target_name = input("Whom do you want to send the money too ?\n")
+                        for i in content:
+                            if i.split(": ")[0] == target_name:
+                                text_in_file += i.split(": ")[0] + ": " + str((int(action.split("|")[1]) + int(i.split(": ")[1].replace("\n", "")))) + "\n"
+                                found_person = True
+                            elif i.split(": ")[0] == name:
+                                text_in_file += i.split(": ")[0] + ": " + str(int(i.split(": ")[1].replace("\n", "")) - int(action.split("|")[1])) + "\n"
+                                if int(i.split(": ")[1].replace("\n", "")) - int(action.split("|")[1]) < 0:
+                                    ispositive = False
                             else:
-                                if balance - int(action.split("|")[1]) >= 0:
-                                    balance -= int(action.split("|")[1])
+                                text_in_file += i
+                        if not found_person:
+                            text_in_file = ""
+                            print("Invalid user name, person not found")
+
+                    elif action.split("|")[0].upper() == "DEPOSIT":
+                        for i in content:
+                            if i.split(": ")[0] == name:
+                                text_in_file += i.split(": ")[0] + ": " + str(int(action.split("|")[1]) + int(i.split(": ")[1].replace("\n", "")))
+                            else:
+                                text_in_file += i
+
+                    else:
+                        for x in content:
+                            if x.split(": ")[0] == name:
+                                balance = int(x.split(": ")[1].replace("\n", ""))
+                                if action.split("|")[0] == "deposit":
+                                    balance += int(action.split("|")[1])
                                     text_in_file += f'{x.split(": ")[0]}: {balance}\n'
                                 else:
-                                    print(f"{name} does not have sufficient balance")
-                                    text_in_file += f'{x.split(": ")[0]}: {balance}\n'
-                        else:
-                            text_in_file += x.replace("\n", "") + "\n"
-                if text_in_file != "" and ispositive:
-                    f.seek(0)
-                    f.truncate(0)
-                    f.write(text_in_file)
-                elif not ispositive:
-                    print("Insufficient balance")
-                else:
-                    print("No operation was executed, try one more time if again this message appears then contact support")
-                run = False
-        else:
-            while True:
-                end = input("CONTINUE ? to Introduce the data one more time or EXIT ?\n").upper()
-                if end == "CONTINUE":
-                    break
-                elif end == "EXIT":
+                                    if balance - int(action.split("|")[1]) >= 0:
+                                        balance -= int(action.split("|")[1])
+                                        text_in_file += f'{x.split(": ")[0]}: {balance}\n'
+                                    else:
+                                        print(f"{name} does not have sufficient balance")
+                                        text_in_file += f'{x.split(": ")[0]}: {balance}\n'
+                            else:
+                                text_in_file += x.replace("\n", "") + "\n"
+                    if text_in_file != "" and ispositive:
+                        f.seek(0)
+                        f.truncate(0)
+                        f.write(text_in_file)
+                    elif not ispositive:
+                        print("Insufficient balance")
+                    else:
+                        print("No operation was executed, try one more time if again this message appears then contact support")
                     run = False
-                    break
+            else:
+                while True:
+                    end = input("CONTINUE ? to Introduce the data one more time or EXIT ?\n").upper()
+                    if end == "CONTINUE":
+                        break
+                    elif end == "EXIT":
+                        run = False
+                        break
     else:
         while True:
             end_character = input("Invalid character,try AGAIN or EXIT \n").upper()
