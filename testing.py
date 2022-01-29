@@ -18,7 +18,6 @@ def admin_pass():
 
 
 run = True
-text = ""
 
 while run:
     character = input("Who are you ADMIN or USER ?\n").upper()
@@ -82,6 +81,9 @@ while run:
                                 ispositive = False
                         else:
                             text_in_file += i
+                    if not found_person:
+                        text_in_file = ""
+                        print("Invalid user name, person not found")
 
                 elif action.split("|")[0].upper() == "DEPOSIT":
                     for i in content:
@@ -106,12 +108,10 @@ while run:
                                     text_in_file += f'{x.split(": ")[0]}: {balance}\n'
                         else:
                             text_in_file += x.replace("\n", "") + "\n"
-                if text_in_file != "" and ispositive and found_person:
+                if text_in_file != "" and ispositive:
                     f.seek(0)
                     f.truncate(0)
                     f.write(text_in_file)
-                elif not found_person:
-                    print("Invalid user name, person not found")
                 elif not ispositive:
                     print("Insufficient balance")
                 else:
