@@ -1,0 +1,4 @@
+- 👋 Hi, I’m @FutureFrance
+- 👀 I’m a starting phyton developer, i am interested in AI, building alghoritms for trading and working with data
+- 🌱 I’m currently learning more about AI
+- 📫 My discord is: Future of France#7962
