@@ -25,29 +25,45 @@ while run:
     character = input("Who are you ADMIN or USER ?\n").upper()
 
     if character == "ADMIN":
-        password_ad = input("Introduce your password\n")
+        password_ad = input("Introduce your password: ")
         if password_ad == admin_pass():
             admin_action = input("Hi, admin what do you want to do to ADD a user or to REMOVE a user ?\n")
 
             if admin_action.upper() == "ADD":
                 with open("testit.txt", "a+") as file:
-                    tst = f'{input("Introduce the NAME: ")}: {input("Introduce the amount of money: ")}'
-                    file.write(tst)
-                    print(tst)
+                    register_user = f'{input("Introduce the NAME: ")}: {input("Introduce the amount of money: ")}\n'
+                    file.write(register_user)
+                with open("accounts_pass.txt", "a+") as f:
+                    set_user_pass = input("Add a password to the user account: ")
+                    f.write(f'{register_user.split(": ")[0]}: {set_user_pass}\n')
+                run = False
             elif admin_action.upper() == "REMOVE":
-                target = input("What is the name of the person to delete\n")
-                admin_text = ""
                 with open("testit.txt", "r+") as file:
                     admin_content = file.readlines()
+                    admin_text = ""
+                    target = input("What is the name of the person to delete ?\n")
+
                     for i in admin_content:
                         if i.split(": ")[0] != target:
-                            admin_text += i.replace("\n", "") + "\n"
+                            admin_text += i
                     if admin_text != "":
                         file.seek(0)
                         file.truncate(0)
                         file.write(admin_text)
                     else:
                         print("No operation was executed, try one more time if again this message appears then contact support")
+
+                admin_text = ""
+
+                with open("accounts_pass.txt", "r+") as pass_user:
+                    user_pass = pass_user.readlines()
+                    for j in user_pass:
+                        if j.split(": ")[0] != target:
+                            admin_text += j
+                    pass_user.seek(0)
+                    pass_user.truncate(0)
+                    pass_user.write(admin_text)
+                run = False
             else:
                 while True:
                     end_admin = input("You introduced the wrong command, CONTINUE or EXIT ?\n")
@@ -56,7 +72,6 @@ while run:
                         break
                     elif end_admin.upper() == "CONTINUE":
                         break
-            run = False
         else:
             print("Wrong password, try again")
 
@@ -80,7 +95,7 @@ while run:
                         break
             else:
                 print("nonexistent user")
-                
+
             if not user_access and user_in_list:
                 print("Wrong password")
 
