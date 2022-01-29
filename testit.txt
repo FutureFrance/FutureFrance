@@ -1,0 +1,4 @@
+Frank: 100
+Paper: 97
+are: 100
+Lexi: 124
