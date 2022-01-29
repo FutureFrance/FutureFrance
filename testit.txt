@@ -1,4 +1,7 @@
 Frank: 100
-Paper: 97
-are: 100
-Lexi: 124
+Paper: 70
+are: 125
+Lexi: 129
+Mike: 101
+Ethan: 89
+Sg: 79
